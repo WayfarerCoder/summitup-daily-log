@@ -1,165 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SummitUp Daily Work Log</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SummitUp Work Log</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f7fa;
-      margin: 0;
-      padding: 0;
+      background-color: #f5f5f5;
+      padding: 2rem;
     }
-
-    .container {
-      max-width: 600px;
-      margin: 80px auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-
-    h1, h2 {
+    h1 {
       text-align: center;
       color: #333;
     }
-
+    form {
+      background: #fff;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
     label {
       display: block;
-      margin: 12px 0 6px;
+      margin-bottom: 0.5rem;
       font-weight: bold;
-      color: #555;
     }
-
-    input[type="text"],
-    input[type="password"],
-    select,
-    textarea {
+    input, select, textarea, button {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 16px;
+      padding: 0.75rem;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
+      border-radius: 4px;
+      font-size: 1rem;
     }
-
-    textarea {
-      resize: vertical;
-    }
-
     button {
       background-color: #007BFF;
-      color: #fff;
-      padding: 12px 20px;
+      color: white;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
-      width: 100%;
     }
-
     button:hover {
       background-color: #0056b3;
-    }
-
-    #formSection {
-      display: none;
-    }
-
-    #pinSection {
-      text-align: center;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .error {
-      color: red;
-      font-size: 14px;
     }
   </style>
 </head>
 <body>
-
-  <div class="container" id="pinSection">
-    <h2>🔒 Access Work Log</h2>
-    <p>Please enter the access PIN to proceed:</p>
-    <input type="password" id="pinInput" placeholder="Enter 4-digit PIN" maxlength="4" />
-    <button onclick="checkPin()">Unlock</button>
-    <p id="pinError" class="error hidden">Incorrect PIN. Please try again.</p>
-  </div>
-
-  <div class="container" id="formSection">
-    <h1>SummitUp Daily Work Log</h1>
-    <form id="workLogForm">
+  <h1>SummitUp Daily Log Form</h1>
+  <form id="logForm">
+    <div class="form-group">
       <label for="name">Name:</label>
-      <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+      <input type="text" id="name" name="Name" required />
+    </div>
 
-      <label for="status">Check-in/Check-out:</label>
-      <select id="status" name="status" required>
-        <option value="">Select</option>
+    <div class="form-group">
+      <label for="checkinCheckout">Check-in/Check-out/Note:</label>
+      <select id="checkinCheckout" name="CheckinCheckout" required>
         <option value="Check-In">Check-In</option>
         <option value="Check-Out">Check-Out</option>
         <option value="Note">Note</option>
       </select>
+    </div>
 
-      <label for="log">Work Log:</label>
-      <textarea id="log" name="log" placeholder="What did you do today?" rows="4" required></textarea>
+    <div class="form-group">
+      <label for="logType">Log Type:</label>
+      <select id="logType" name="LogType" required>
+        <option value="General">General</option>
+        <option value="Meeting">Meeting</option>
+        <option value="Break">Break</option>
+        <option value="Task">Task</option>
+      </select>
+    </div>
 
-      <button type="submit">Submit</button>
-    </form>
-    <p id="statusMessage" style="text-align:center; margin-top:15px;"></p>
-  </div>
+    <div class="form-group">
+      <label for="workLog">Work Log:</label>
+      <textarea id="workLog" name="WorkLog" rows="4" required></textarea>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
 
   <script>
-    const CORRECT_PIN = "1995"; // Updated PIN
-
-    function checkPin() {
-      const input = document.getElementById("pinInput").value;
-      const error = document.getElementById("pinError");
-
-      if (input === CORRECT_PIN) {
-        document.getElementById("pinSection").style.display = "none";
-        document.getElementById("formSection").style.display = "block";
-      } else {
-        error.classList.remove("hidden");
-      }
-    }
-
-    const form = document.getElementById("workLogForm");
-    const statusMessage = document.getElementById("statusMessage");
-
-    form.addEventListener("submit", function(e) {
+    document.getElementById("logForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const name = document.getElementById("name").value;
-      const status = document.getElementById("status").value;
-      const log = document.getElementById("log").value;
-
-      const formData = new FormData();
-      formData.append("Name", name);
-      formData.append("CheckinCheckout", status);
-      formData.append("WorkLog", log);
+      const formData = {
+        Name: document.getElementById("name").value,
+        CheckinCheckout: document.getElementById("checkinCheckout").value,
+        LogType: document.getElementById("logType").value,
+        WorkLog: document.getElementById("workLog").value,
+      };
 
       fetch("https://script.google.com/macros/s/AKfycbxdjp9xEwwBVQpDRh977TTbou_vCZY3lo59J97UmKLOoRRTS7DL9fSdQH8jqq3FA1zhaQ/exec", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       })
-      .then(res => res.text())
-      .then(response => {
-        statusMessage.textContent = "✅ Submitted successfully!";
-        form.reset();
-        setTimeout(() => { statusMessage.textContent = ""; }, 3000);
-      })
-      .catch(error => {
-        console.error(error);
-        statusMessage.textContent = "❌ Submission failed. Try again later.";
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          alert(data.message);
+          document.getElementById("logForm").reset();
+        })
+        .catch((err) => {
+          alert("Something went wrong!");
+          console.error(err);
+        });
     });
   </script>
-
 </body>
 </html>

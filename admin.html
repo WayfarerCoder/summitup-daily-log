@@ -73,26 +73,26 @@
     <h2>🔐 Admin Access</h2>
     <p>Enter your admin PIN to view logs:</p>
     <input type="password" id="adminPin" maxlength="4" placeholder="Enter 4-digit PIN">
-    <button onclick="verifyAdminPin()">Access Logs</button>
+    <button onclick="checkAdminPin()">Access Logs</button>
     <p id="adminError" class="error hidden">Incorrect PIN. Access denied.</p>
   </div>
 
   <div class="container hidden" id="logSection">
     <h1>📋 Work Log Overview</h1>
-    <!-- Google Sheet Embed (read-only) -->
     <iframe src="https://docs.google.com/spreadsheets/d/1qFeBy3JXl9BeoYsGlywVQ5-YgFfOGatAxLZbsbCuLuQ/edit?usp=sharing&rm=minimal&widget=false" allowfullscreen></iframe>
   </div>
 
   <script>
-    const ADMIN_PIN = "2025";
+    const ADMIN_PIN = "1995";
 
     function checkAdminPin() {
-      const pin = document.getElementById("adminPin").value;
+      const pin = document.getElementById("adminPin").value.trim();
       const error = document.getElementById("adminError");
 
       if (pin === ADMIN_PIN) {
         document.getElementById("pinSection").classList.add("hidden");
         document.getElementById("logSection").classList.remove("hidden");
+        error.classList.add("hidden");
       } else {
         error.classList.remove("hidden");
       }

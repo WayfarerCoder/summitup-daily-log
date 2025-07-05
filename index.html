@@ -2,181 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SummitUp Daily Work Log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SummitUp Daily Work Log</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f7fa;
-      margin: 0;
-      padding: 0;
+      background: #f2f7fc;
+      display: flex;
+      justify-content: center;
+      padding-top: 40px;
     }
-
     .container {
-      max-width: 600px;
-      margin: 80px auto;
-      padding: 20px;
-      background-color: #fff;
+      background: white;
+      padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 400px;
     }
-
-    h1, h2 {
+    h1 {
       text-align: center;
       color: #333;
     }
-
     label {
       display: block;
-      margin: 12px 0 6px;
+      margin-top: 15px;
       font-weight: bold;
-      color: #555;
     }
-
-    input[type="text"],
-    input[type="password"],
-    select,
-    textarea {
+    input, select, textarea, button {
       width: 100%;
       padding: 10px;
-      margin-bottom: 16px;
-      border: 1px solid #ccc;
+      margin-top: 5px;
       border-radius: 6px;
+      border: 1px solid #ccc;
       font-size: 14px;
     }
-
-    textarea {
-      resize: vertical;
-    }
-
     button {
-      background-color: #007BFF;
-      color: #fff;
-      padding: 12px 20px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
+      margin-top: 20px;
       cursor: pointer;
-      width: 100%;
     }
-
     button:hover {
       background-color: #0056b3;
     }
-
-    #formSection {
-      display: none;
-    }
-
-    #pinSection {
+    .status {
+      margin-top: 15px;
       text-align: center;
+      font-weight: bold;
     }
-
-    .hidden {
-      display: none;
+    .success {
+      color: green;
     }
-
     .error {
       color: red;
-      font-size: 14px;
     }
   </style>
 </head>
 <body>
-
-  <div class="container" id="pinSection">
-    <h2>🔒 Access Work Log</h2>
-    <p>Please enter the access PIN to proceed:</p>
-    <input type="password" id="pinInput" placeholder="Enter 4-digit PIN" maxlength="4" />
-    <button onclick="checkPin()">Unlock</button>
-    <p id="pinError" class="error hidden">Incorrect PIN. Please try again.</p>
-  </div>
-
-  <div class="container" id="formSection">
+  <div class="container">
     <h1>SummitUp Daily Work Log</h1>
-    <form id="workLogForm">
+    <form id="logForm">
       <label for="name">Name:</label>
-      <input type="text" id="name" name="name" placeholder="Enter your full name" required />
+      <input type="text" id="name" required />
 
       <label for="logType">Log Type:</label>
-      <select id="logType" name="logType" required>
-        <option value="">Select Log Type</option>
-        <option value="Meeting">Meeting</option>
-        <option value="Task">Task</option>
-        <option value="Break">Break</option>
+      <select id="logType" required>
         <option value="Admin">Admin</option>
+        <option value="Sales">Sales</option>
+        <option value="Tech">Tech</option>
+        <option value="Other">Other</option>
       </select>
 
-      <label for="status">Check-in/Check-out:</label>
-      <select id="status" name="status" required>
-        <option value="">Select</option>
+      <label for="type">Check-in/Check-out:</label>
+      <select id="type" required>
         <option value="Check-In">Check-In</option>
         <option value="Check-Out">Check-Out</option>
         <option value="Note">Note</option>
       </select>
 
       <label for="log">Work Log:</label>
-      <textarea id="log" name="log" placeholder="What did you do today?" rows="4" required></textarea>
+      <textarea id="log" rows="4" required></textarea>
 
       <button type="submit">Submit</button>
     </form>
-    <p id="statusMessage" style="text-align:center; margin-top:15px;"></p>
+
+    <div class="status" id="statusMessage"></div>
   </div>
 
   <script>
-    const CORRECT_PIN = "1995";
+    const form = document.getElementById('logForm');
+    const statusMessage = document.getElementById('statusMessage');
 
-    function checkPin() {
-      const input = document.getElementById("pinInput").value;
-      const error = document.getElementById("pinError");
-
-      if (input === CORRECT_PIN) {
-        document.getElementById("pinSection").style.display = "none";
-        document.getElementById("formSection").style.display = "block";
-      } else {
-        error.classList.remove("hidden");
-      }
-    }
-
-    const form = document.getElementById("workLogForm");
-    const statusMessage = document.getElementById("statusMessage");
-
-    form.addEventListener("submit", function(e) {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const name = document.getElementById("name").value;
-      const logType = document.getElementById("logType").value;
-      const status = document.getElementById("status").value;
-      const log = document.getElementById("log").value;
+      const data = {
+        name: document.getElementById('name').value,
+        logType: document.getElementById('logType').value,
+        type: document.getElementById('type').value,
+        log: document.getElementById('log').value,
+      };
 
-      const payload = JSON.stringify({
-        name,
-        logType,
-        type: status,
-        log
-      });
-
-      fetch("https://script.google.com/macros/s/AKfycbxdjp9xEwwBVQpDRh977TTbou_vCZY3lo59J97UmKLOoRRTS7DL9fSdQH8jqq3FA1zhaQ/exec", {
-        method: "POST",
+      fetch('https://script.google.com/macros/s/AKfycbx42zh4x-sv-_8SSVb9ssnM-qC6lS9GaBPPISzzO_JON0l9e1_xb6T4poPEfl_9FbsJ1A/exec', {
+        method: 'POST',
+        mode: 'cors',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         },
-        body: payload
+        body: JSON.stringify(data)
       })
-      .then(res => res.json())
-      .then(response => {
-        statusMessage.textContent = "✅ Submitted successfully!";
-        form.reset();
-        setTimeout(() => {
-          statusMessage.textContent = "";
-        }, 3000);
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === 'success') {
+          statusMessage.textContent = '✅ Submission successful!';
+          statusMessage.className = 'status success';
+          form.reset();
+        } else {
+          throw new Error(result.message || 'Unknown error');
+        }
       })
       .catch(error => {
-        console.error("Submission Error:", error);
-        statusMessage.textContent = "❌ Submission failed. Try again later.";
+        statusMessage.textContent = '❌ Submission failed. Try again later.';
+        statusMessage.className = 'status error';
+        console.error('Error submitting form:', error);
       });
     });
   </script>
-
 </body>
 </html>
